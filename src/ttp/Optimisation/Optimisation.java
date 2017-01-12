@@ -63,6 +63,9 @@ public class Optimisation {
                 
         boolean improvement = true;
         double bestObjective = Double.NEGATIVE_INFINITY;
+
+        double globalBestObjective = Double.NEGATIVE_INFINITY; // need one more for the simulated annealing
+        TTPSolution s2 = null;
         
         long startingTimeForRuntimeLimit = System.currentTimeMillis()-200;
         
@@ -83,7 +86,8 @@ public class Optimisation {
             boolean flippedToZero = false;
             
             switch (mode) {
-                case 1: 
+                case 1:
+                case 3: // simulated annealing
                     // flip one bit
                     int position = (int)(Math.random()*newPackingPlan.length);
 //                    newPackingPlan[position] = Math.abs(newPackingPlan[position]-1);
@@ -133,8 +137,24 @@ public class Optimisation {
                 packingPlan = newPackingPlan;
                 s = newSolution;
                 bestObjective = newSolution.ob;
+
+                if (newSolution.ob > globalBestObjective) {
+                    s2 = newSolution;
+                    globalBestObjective = newSolution.ob;
+                }
                 
-            } else {
+            } else if (mode == 3 && newSolution.wend >=0 ) { // simulated annealing
+                /* proba */
+                double arg = (newSolution.ob - bestObjective) * ttp.Utils.Utils.stopTiming();
+                if(Math.random() < arg) {
+                    /* update */
+                    packingPlan = newPackingPlan;
+                    s = newSolution;
+                    bestObjective = newSolution.ob;
+                }
+                counter = 0; // relaunch the counter to avoid blocking
+            }
+            else {
                 improvement = false;
                 counter ++;
             }
@@ -144,8 +164,8 @@ public class Optimisation {
         }
         
         long duration = ttp.Utils.Utils.stopTiming();
-        s.computationTime = duration;
-        return s;
+        s2.computationTime = duration;
+        return s2;
     }
     
     public static int[] linkernTour(TTPInstance instance) {
