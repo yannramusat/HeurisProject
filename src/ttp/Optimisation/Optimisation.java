@@ -25,7 +25,7 @@ import ttp.Utils.DeepCopy;
  */
 public class Optimisation {
 
-    public void preProcess(TTPInstance instance, int[] tour) {
+    public static void preProcess(TTPInstance instance, int[] tour) {
     TTPSolution empty_sol=new TTPSolution(tour, new int[0]);
     instance.evaluate(empty_sol);
         for (int j = 0; j < instance.numberOfNodes; j++) {
@@ -48,12 +48,12 @@ public class Optimisation {
     }
     
     
-    public  TTPSolution hillClimber(TTPInstance instance, int[] tour, //j'ai du virer le static il m'embetait quand j'appelais preprocess
+    public static TTPSolution hillClimber(TTPInstance instance, int[] tour,
             int mode, 
             int durationWithoutImprovement, int maxRuntime) {
         
         ttp.Utils.Utils.startTiming();
-        this.preProcess(instance,tour); //il m'embetait ici
+        //Optimisation.preProcess(instance,tour);
         
         TTPSolution s = null;
         boolean debugPrint = !true;
