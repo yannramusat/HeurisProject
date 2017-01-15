@@ -3,6 +3,6 @@
 Type of *algorithm*:
 
 1. RLS
-2. (\lambda+\mu) EA
+2. (\mu+\lambda) EA
 3. Simulated annealing
-4. (\lambda,\mu) EA
+4. (\mu,\lambda) EA

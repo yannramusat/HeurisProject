@@ -141,46 +141,57 @@ public class Optimisation {
             }
 //            System.out.println(ttp.Utils.Utils.stopTiming());
 
-            if(mode == 4) {
+            if(mode == 2 || mode == 4) {
                 //System.out.println();
                 // test whether we have new optimum
+                improvement = false;
                 for(int k = 0; k < lambda; k++) {
                     if(newSolutions[k].ob > globalBestObjective && newSolutions[k].wend >= 0) {
                         counter = 0;
                         s2 = newSolutions[k].clone();
                         globalBestObjective = s2.ob;
+                        improvement = true;
                         //System.out.println("New best seen: "+globalBestObjective);
                     }
                     //System.out.println("New seen: "+newSolutions[k].ob);
                 }
+                if(!improvement) counter++;
 
                 // keep best ones
                 for(int k = 0; k < mu; k++) {
+                    int indice = k;
+                    double new_max = Double.NEGATIVE_INFINITY;
                     if(mode == 2) {
                         for(int l = 0; l < lambda + mu; l++) {
-
-                        }
-                    } else if (mode == 4) {
-                        int indice = k;
-                        double new_max = Double.NEGATIVE_INFINITY;
-                        improvement = false;
-                        for(int l = 0; l < lambda; l++) {
-                            if(newSolutions[l].ob > new_max && newSolutions[k].wend >= 0) {
-                                new_max = newSolutions[l].ob;
-                                indice = l;
-                                improvement = true;
+                            if(l<mu) {
+                                TTPSolution tmp = new TTPSolution(tour, packingPlans[l]);
+                                instance.evaluate(tmp);
+                                if(tmp.ob > new_max && tmp.wend >= 0) {
+                                    new_max = tmp.ob;
+                                    indice = l;
+                                }
+                            } else {
+                                if(newSolutions[l-mu].ob > new_max && newSolutions[l-mu].wend >= 0) {
+                                    new_max = newSolutions[l-mu].ob;
+                                    indice = l-mu;
+                                }
                             }
                         }
-                        if(!improvement) counter++;
-
-                        packingPlans[k] = newPackingPlans[indice];
-                        //System.out.println(solutions[k].ob);
-                        newSolutions[indice].ob = Double.NEGATIVE_INFINITY;
-                        //System.out.println(solutions[k].ob);
+                    } else if (mode == 4) {
+                        for(int l = 0; l < lambda; l++) {
+                            if(newSolutions[l].ob > new_max && newSolutions[l].wend >= 0) {
+                                new_max = newSolutions[l].ob;
+                                indice = l;
+                            }
+                        }
                     }
+                    packingPlans[k] = newPackingPlans[indice];
+                    //System.out.println(solutions[k].ob);
+                    newSolutions[indice].ob = Double.NEGATIVE_INFINITY;
+                    //System.out.println(solutions[k].ob);
                 }
 
-            } else if(mode == 1 || mode == 3 || mode == 2) {
+            } else if(mode == 1 || mode == 3) {
                 /* replacement condition:
                  *   objective value has to be at least as good AND
                  *   the knapsack cannot be overloaded
