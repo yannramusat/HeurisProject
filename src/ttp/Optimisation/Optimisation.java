@@ -159,9 +159,10 @@ public class Optimisation {
 
                 // keep best ones
                 for(int k = 0; k < mu; k++) {
-                    int indice = k;
+                    int indice = 0;
                     double new_max = Double.NEGATIVE_INFINITY;
                     if(mode == 2) {
+                        boolean lam = false;
                         for(int l = 0; l < lambda + mu; l++) {
                             if(l<mu) {
                                 TTPSolution tmp = new TTPSolution(tour, packingPlans[l]);
@@ -174,8 +175,17 @@ public class Optimisation {
                                 if(newSolutions[l-mu].ob > new_max && newSolutions[l-mu].wend >= 0) {
                                     new_max = newSolutions[l-mu].ob;
                                     indice = l-mu;
+                                    lam = true;
                                 }
                             }
+                        }
+                        if(lam) {
+                            packingPlans[k] = (int[])DeepCopy.copy(newPackingPlans[indice]);
+                            //System.out.println(solutions[k].ob);
+                            newSolutions[indice].ob = Double.NEGATIVE_INFINITY;
+                            //System.out.println(solutions[k].ob);
+                        } else {
+                            packingPlans[k] = (int[])DeepCopy.copy(packingPlans[indice]);
                         }
                     } else if (mode == 4) {
                         for(int l = 0; l < lambda; l++) {
@@ -184,11 +194,12 @@ public class Optimisation {
                                 indice = l;
                             }
                         }
+
+                        packingPlans[k] = (int[])DeepCopy.copy(newPackingPlans[indice]);
+                        //System.out.println(solutions[k].ob);
+                        newSolutions[indice].ob = Double.NEGATIVE_INFINITY;
+                        //System.out.println(solutions[k].ob);
                     }
-                    packingPlans[k] = newPackingPlans[indice];
-                    //System.out.println(solutions[k].ob);
-                    newSolutions[indice].ob = Double.NEGATIVE_INFINITY;
-                    //System.out.println(solutions[k].ob);
                 }
 
             } else if(mode == 1 || mode == 3) {
