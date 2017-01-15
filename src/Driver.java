@@ -24,6 +24,8 @@ public class Driver {
      * args[2]  optimisation approach chosen
      * args[3]  stopping criterion: number of evaluations without improvement
      * args[4]  stopping criterion: time in milliseconds (e.g., 60000 equals 1 minute)
+     * args[5]  opt parameter for the optimisation approach: mu
+     * args[6]  opt parameter for the optimisation approach: lambda
      */
     public static void main(String[] args) {
        
@@ -32,7 +34,7 @@ public class Driver {
 //            args = new String[]{"instances", "a280_n1395_bounded-strongly-corr_10.ttp", // to do just this 1 instance
             args = new String[]{"instances", "fnl4461_n4460_bounded-strongly-corr_01.ttp", // to do just this 1 instance
 //            args = new String[]{"instances", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
-            "3", "10000", "3000"};
+            "3", "10000", "3000", "1", "1"};
 //        ttp.Optimisation.Optimisation.doAllLinkernTours();
 //        runSomeTests();
         doBatch(args);
@@ -47,6 +49,13 @@ public class Driver {
         int algorithm = Integer.parseInt(args[2]);
         int durationWithoutImprovement = Integer.parseInt(args[3]);
         int maxRuntime = Integer.parseInt(args[4]);
+
+        int mu = 1;
+        int lambda = 1;
+        if(args.length >= 7) {
+            mu = Integer.parseInt(args[5]);
+            lambda = Integer.parseInt(args[6]);
+        }
         
 //        System.out.println("files.length="+files.length+" algorithm="+algorithm+" durationWithoutImprovement="+durationWithoutImprovement);
 //        System.out.println("wend wendUsed fp ftraw ft ob computationTime");
@@ -65,7 +74,7 @@ public class Driver {
             
             // do the optimisation
             TTPSolution solution = Optimisation.hillClimber(instance, tour, algorithm, 
-                    durationWithoutImprovement, maxRuntime);
+                    durationWithoutImprovement, maxRuntime, mu, lambda);
             
             
             // print to file
@@ -121,10 +130,10 @@ public class Driver {
         int durationWithoutImprovement = 100;
         
         System.out.println("\nOptimiser: hillclimber (flip 1)");
-        Optimisation.hillClimber(instance, tour, 1, durationWithoutImprovement, 600).printFull();
+        Optimisation.hillClimber(instance, tour, 1, durationWithoutImprovement, 600, 1, 1).printFull();
         
         System.out.println("\nOptimiser: hillclimber (flip with prob 1/n)");
-        Optimisation.hillClimber(instance, tour, 2, durationWithoutImprovement, 600).printFull();
+        Optimisation.hillClimber(instance, tour, 2, durationWithoutImprovement, 600, 1, 1).printFull();
         
         
     }

@@ -50,15 +50,20 @@ public class Optimisation {
     
     public static TTPSolution hillClimber(TTPInstance instance, int[] tour,
             int mode, 
-            int durationWithoutImprovement, int maxRuntime) {
+            int durationWithoutImprovement, int maxRuntime, int mu, int lambda) {
         
         ttp.Utils.Utils.startTiming();
         //Optimisation.preProcess(instance,tour);
         
         TTPSolution s = null;
         boolean debugPrint = !true;
-        
-        int[] packingPlan = new int[instance.numberOfItems];
+
+        if(mode == 1 || mode == 3) {
+            mu = 1;
+            lambda = 1;
+        }
+        int[][] packingPlans = new int[mu][instance.numberOfItems];
+        //int[] packingPlan = new int[instance.numberOfItems];
         
                 
         boolean improvement = true;
@@ -81,7 +86,13 @@ public class Optimisation {
             if (debugPrint) {
                 System.out.println(" i="+i+"("+counter+") bestObjective="+bestObjective); 
             }
-            int[] newPackingPlan = (int[])DeepCopy.copy(packingPlan);
+
+            //int[] newPackingPlan = (int[])DeepCopy.copy(packingPlan);
+            int[][] newPackingPlans = new int[lambda][instance.numberOfItems];
+            for(int k = 0; k < lambda; k++) {
+                int position = (int)(Math.random()*mu);
+                newPackingPlans[k] = (int[])DeepCopy.copy(packingPlans[position]);
+            }
             
             boolean flippedToZero = false;
             
@@ -89,26 +100,26 @@ public class Optimisation {
                 case 1:
                 case 3: // simulated annealing
                     // flip one bit
-                    int position = (int)(Math.random()*newPackingPlan.length);
+                    int position = (int)(Math.random()*newPackingPlans[0].length);
 //                    newPackingPlan[position] = Math.abs(newPackingPlan[position]-1);
-                    if (newPackingPlan[position] == 1) {
-                                newPackingPlan[position] = 0;
+                    if (newPackingPlans[0][position] == 1) {
+                                newPackingPlans[0][position] = 0;
                                 // investigation: was at least one item flipped to zero during an improvement?
 //                                flippedToZero = true;
                     } else {
-                        newPackingPlan[position] = 1;
+                        newPackingPlans[0][position] = 1;
                     }
                     break;
                 case 2:
                     // flip with probability 1/n
-                    for (int j=0; j<packingPlan.length; j++) {
-                        if (Math.random()<1d/packingPlan.length)
-                            if (newPackingPlan[j] == 1) {
-                                newPackingPlan[j] = 0;
+                    for (int j=0; j<packingPlans[0].length; j++) {
+                        if (Math.random()<1d/packingPlans[0].length)
+                            if (newPackingPlans[0][j] == 1) {
+                                newPackingPlans[0][j] = 0;
                                 // investigation: was at least one item flipped to zero during an improvement?
 //                                flippedToZero = true;
                             } else {
-                                newPackingPlan[j] = 1;
+                                newPackingPlans[0][j] = 1;
                             }
                     }
                     break;
@@ -117,7 +128,7 @@ public class Optimisation {
             
             
 //            ttp.Utils.Utils.startTiming();
-            TTPSolution newSolution = new TTPSolution(tour, newPackingPlan);
+            TTPSolution newSolution = new TTPSolution(tour, newPackingPlans[0]);
             instance.evaluate(newSolution);
 //            System.out.println(ttp.Utils.Utils.stopTiming());
             
@@ -134,7 +145,7 @@ public class Optimisation {
                     counter = 0;
                 }
                 
-                packingPlan = newPackingPlan;
+                packingPlans[0] = newPackingPlans[0];
                 s = newSolution;
                 bestObjective = newSolution.ob;
 
@@ -148,7 +159,7 @@ public class Optimisation {
                 double arg = (newSolution.ob - bestObjective) * ttp.Utils.Utils.stopTiming();
                 if(Math.random() < arg) {
                     /* update */
-                    packingPlan = newPackingPlan;
+                    packingPlans[0] = newPackingPlans[0];
                     s = newSolution;
                     bestObjective = newSolution.ob;
                 }
