@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author wagner
  */
-public class TTPSolution {
+public class TTPSolution implements Cloneable {
     
     public int[] tspTour;
     public int[] packingPlan;
@@ -38,6 +38,18 @@ public class TTPSolution {
         wend = Double.POSITIVE_INFINITY;
         wendUsed = Double.POSITIVE_INFINITY;
         computationTime = Long.MAX_VALUE;
+    }
+
+    public TTPSolution clone() {
+        TTPSolution clone = new TTPSolution(this.tspTour, this.packingPlan);
+        clone.fp = this.fp;
+        clone.ft = this.ft;
+        clone.ftraw = this.ftraw;
+        clone.ob = this.ob;
+        clone.wend = this.wend;
+        clone.wendUsed = this.wendUsed;
+        clone.computationTime = this.computationTime;
+        return clone;
     }
     
     public void print() {

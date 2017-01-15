@@ -54,14 +54,14 @@ public class Optimisation {
         
         ttp.Utils.Utils.startTiming();
         //Optimisation.preProcess(instance,tour);
-        
-        TTPSolution s = null;
+
         boolean debugPrint = !true;
 
         if(mode == 1 || mode == 3) {
             mu = 1;
             lambda = 1;
         }
+        //TTPSolution[] solutions = new TTPSolution[mu];
         int[][] packingPlans = new int[mu][instance.numberOfItems];
         //int[] packingPlan = new int[instance.numberOfItems];
         
@@ -111,16 +111,19 @@ public class Optimisation {
                     }
                     break;
                 case 2:
+                case 4:
                     // flip with probability 1/n
-                    for (int j=0; j<packingPlans[0].length; j++) {
-                        if (Math.random()<1d/packingPlans[0].length)
-                            if (newPackingPlans[0][j] == 1) {
-                                newPackingPlans[0][j] = 0;
-                                // investigation: was at least one item flipped to zero during an improvement?
-//                                flippedToZero = true;
-                            } else {
-                                newPackingPlans[0][j] = 1;
-                            }
+                    for(int k = 0; k < lambda; k++) {
+                        for (int j = 0; j < packingPlans[0].length; j++) {
+                            if (Math.random() < 1d / packingPlans[0].length)
+                                if (newPackingPlans[k][j] == 1) {
+                                    newPackingPlans[k][j] = 0;
+                                    // investigation: was at least one item flipped to zero during an improvement?
+                                    //                                flippedToZero = true;
+                                } else {
+                                    newPackingPlans[k][j] = 1;
+                                }
+                        }
                     }
                     break;
             }
@@ -128,48 +131,97 @@ public class Optimisation {
             
             
 //            ttp.Utils.Utils.startTiming();
-            TTPSolution newSolution = new TTPSolution(tour, newPackingPlans[0]);
-            instance.evaluate(newSolution);
-//            System.out.println(ttp.Utils.Utils.stopTiming());
-            
-                        
-            /* replacement condition:
-             *   objective value has to be at least as good AND
-             *   the knapsack cannot be overloaded
-             */
-            if (newSolution.ob >= bestObjective && newSolution.wend >=0 ) {
-                
-                // for the stopping criterion: check if there was an actual improvement 
-                if (newSolution.ob > bestObjective && newSolution.wend >=0) {
-                    improvement = true;
-                    counter = 0;
-                }
-                
-                packingPlans[0] = newPackingPlans[0];
-                s = newSolution;
-                bestObjective = newSolution.ob;
+            //TTPSolution newSolution = new TTPSolution(tour, newPackingPlans[0]);
+            //instance.evaluate(newSolution);
 
-                if (newSolution.ob > globalBestObjective) {
-                    s2 = newSolution;
-                    globalBestObjective = newSolution.ob;
+            TTPSolution[] newSolutions = new TTPSolution[lambda];
+            for(int k = 0; k < lambda; k++) {
+                newSolutions[k] = new TTPSolution(tour, newPackingPlans[k]);
+                instance.evaluate(newSolutions[k]);
+            }
+//            System.out.println(ttp.Utils.Utils.stopTiming());
+
+            if(mode == 4) {
+                //System.out.println();
+                // test whether we have new optimum
+                for(int k = 0; k < lambda; k++) {
+                    if(newSolutions[k].ob > globalBestObjective && newSolutions[k].wend >= 0) {
+                        counter = 0;
+                        s2 = newSolutions[k].clone();
+                        globalBestObjective = s2.ob;
+                        //System.out.println("New best seen: "+globalBestObjective);
+                    }
+                    //System.out.println("New seen: "+newSolutions[k].ob);
                 }
-                
-            } else if (mode == 3 && newSolution.wend >=0 ) { // simulated annealing
-                /* proba */
-                double arg = (newSolution.ob - bestObjective) * ttp.Utils.Utils.stopTiming();
-                if(Math.random() < arg) {
-                    /* update */
+
+                // keep best ones
+                for(int k = 0; k < mu; k++) {
+                    if(mode == 2) {
+                        for(int l = 0; l < lambda + mu; l++) {
+
+                        }
+                    } else if (mode == 4) {
+                        int indice = k;
+                        double new_max = Double.NEGATIVE_INFINITY;
+                        improvement = false;
+                        for(int l = 0; l < lambda; l++) {
+                            if(newSolutions[l].ob > new_max && newSolutions[k].wend >= 0) {
+                                new_max = newSolutions[l].ob;
+                                indice = l;
+                                improvement = true;
+                            }
+                        }
+                        if(!improvement) counter++;
+
+                        packingPlans[k] = newPackingPlans[indice];
+                        //System.out.println(solutions[k].ob);
+                        newSolutions[indice].ob = Double.NEGATIVE_INFINITY;
+                        //System.out.println(solutions[k].ob);
+                    }
+                }
+
+            } else if(mode == 1 || mode == 3 || mode == 2) {
+                /* replacement condition:
+                 *   objective value has to be at least as good AND
+                 *   the knapsack cannot be overloaded
+                 */
+                if (newSolutions[0].ob >= bestObjective && newSolutions[0].wend >= 0) {
+
+                    // for the stopping criterion: check if there was an actual improvement
+                    if (newSolutions[0].ob > bestObjective && newSolutions[0].wend >= 0) {
+                        improvement = true;
+                        counter = 0;
+                    }
+
                     packingPlans[0] = newPackingPlans[0];
-                    s = newSolution;
-                    bestObjective = newSolution.ob;
+                    //s = newSolutions[0];
+                    bestObjective = newSolutions[0].ob;
+
+                    if (newSolutions[0].ob > globalBestObjective) {
+                        s2 = newSolutions[0].clone();
+                        globalBestObjective = newSolutions[0].ob;
+                        //System.out.println("New best seen:"+globalBestObjective);
+                    }
+                    //System.out.println("New seen: "+newSolutions[0].ob);
+
+                } else if (mode == 3 && newSolutions[0].wend >= 0) { // simulated annealing
+                    /* proba */
+                    double arg = (newSolutions[0].ob - bestObjective) * ttp.Utils.Utils.stopTiming();
+                    if (Math.random() < Math.exp(arg)) {
+                        /* update */
+                        packingPlans[0] = newPackingPlans[0];
+                        //s = newSolutions[0];
+                        bestObjective = newSolutions[0].ob;
+                    }
+                    counter = 0; // relaunch the counter to avoid blocking
+                } else {
+                    improvement = false;
+                    counter++;
                 }
-                counter = 0; // relaunch the counter to avoid blocking
+            } else {
+
             }
-            else {
-                improvement = false;
-                counter ++;
-            }
-            
+
             i++;
             
         }
