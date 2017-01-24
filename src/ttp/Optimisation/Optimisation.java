@@ -46,6 +46,20 @@ public class Optimisation {
         }
 
     }
+
+    /**
+     * Computing binomiale law with Galton.
+     * @param n
+     * @param p
+     * @return r in [0,n] correctly distributed
+     */
+    public static int binomiale(int n, double p) {
+        int res = 0;
+        for(int i = 0; i <= n; i++) {
+            if(Math.random() < p) res++;
+        }
+        return res;
+    }
     
     
     public static TTPSolution hillClimber(TTPInstance instance, int[] tour,
@@ -123,6 +137,17 @@ public class Optimisation {
                                 } else {
                                     newPackingPlans[k][j] = 1;
                                 }
+                        }
+                    }
+                    break;
+                case 5:
+                    int l = binomiale(packingPlans[0].length, lambda / packingPlans[0].length);
+                    int[] positions = new int[l];
+                    for(int ii = 0; ii < l; ii++)
+                        positions[ii] = (int)(Math.random()*newPackingPlans[0].length);
+                    for(int k = 0; k < lambda; k++) {
+                        for(int ii = 0; ii < l; ii++) {
+                            newPackingPlans[k][positions[ii]] = 1 - newPackingPlans[k][positions[ii]];
                         }
                     }
                     break;
@@ -240,8 +265,34 @@ public class Optimisation {
                     improvement = false;
                     counter++;
                 }
-            } else {
-
+            } else if (mode == 5) {
+                int[] optPackingPlan = new int[newPackingPlans[0].length];
+                double maxobj = 0;
+                for(int ii = 0; ii < lambda; ii++) {
+                    if (newSolutions[ii].ob > maxobj && newSolutions[ii].wend >= 0) {
+                        optPackingPlan = newSolutions[ii].packingPlan;
+                        maxobj = newSolutions[ii].ob;
+                    }
+                }
+                maxobj = 0;
+                TTPSolution newSol = null;
+                for(int k = 0; k < lambda; k++) {
+                    for(int ii = 0; ii < newPackingPlans[0].length; ii++) {
+                        if (Math.random() < 1/lambda) newPackingPlans[k][ii] = s2.packingPlan[ii];
+                                else newPackingPlans[k][ii] = optPackingPlan[ii];
+                    }
+                    newSol = new TTPSolution(tour, newPackingPlans[k]);
+                    instance.evaluate(newSol);
+                    if(newSol.ob > maxobj && newSol.wend >= 0) {
+                        optPackingPlan = newSol.packingPlan;
+                        maxobj = newSol.ob;
+                    }
+                }
+                if (newSol.ob > globalBestObjective) {
+                    counter = 0;
+                    s2 = newSol.clone();
+                    globalBestObjective = newSol.ob;
+                }
             }
 
             i++;
