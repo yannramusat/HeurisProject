@@ -64,7 +64,7 @@ public class Optimisation {
     
     public static TTPSolution hillClimber(TTPInstance instance, int[] tour,
             int mode, 
-            int durationWithoutImprovement, int maxRuntime, int mu, int lambda) {
+            int durationWithoutImprovement, int maxRuntime, int mu, double lambda) {
         
         ttp.Utils.Utils.startTiming();
         //Optimisation.preProcess(instance,tour);
@@ -101,8 +101,10 @@ public class Optimisation {
                 System.out.println(" i="+i+"("+counter+") bestObjective="+bestObjective); 
             }
 
+            if(mode == 5) lambda = (int)Math.sqrt(Math.log(packingPlans[0].length));
+
             //int[] newPackingPlan = (int[])DeepCopy.copy(packingPlan);
-            int[][] newPackingPlans = new int[lambda][instance.numberOfItems];
+            int[][] newPackingPlans = new int[(int)lambda][instance.numberOfItems];
             for(int k = 0; k < lambda; k++) {
                 int position = (int)(Math.random()*mu);
                 newPackingPlans[k] = (int[])DeepCopy.copy(packingPlans[position]);
@@ -142,6 +144,7 @@ public class Optimisation {
                     break;
                 case 5:
                     int l = binomiale(packingPlans[0].length, lambda / packingPlans[0].length);
+                    //System.out.println("Length="+packingPlans[0].length+" lambda="+lambda+" L="+l);
                     int[] positions = new int[l];
                     for(int ii = 0; ii < l; ii++)
                         positions[ii] = (int)(Math.random()*newPackingPlans[0].length);
@@ -159,7 +162,7 @@ public class Optimisation {
             //TTPSolution newSolution = new TTPSolution(tour, newPackingPlans[0]);
             //instance.evaluate(newSolution);
 
-            TTPSolution[] newSolutions = new TTPSolution[lambda];
+            TTPSolution[] newSolutions = new TTPSolution[(int)lambda];
             for(int k = 0; k < lambda; k++) {
                 newSolutions[k] = new TTPSolution(tour, newPackingPlans[k]);
                 instance.evaluate(newSolutions[k]);
@@ -267,30 +270,35 @@ public class Optimisation {
                 }
             } else if (mode == 5) {
                 int[] optPackingPlan = new int[newPackingPlans[0].length];
-                double maxobj = 0;
+                double maxobj = Double.NEGATIVE_INFINITY;;
                 for(int ii = 0; ii < lambda; ii++) {
                     if (newSolutions[ii].ob > maxobj && newSolutions[ii].wend >= 0) {
-                        optPackingPlan = newSolutions[ii].packingPlan;
+                        optPackingPlan = (int[])DeepCopy.copy(newSolutions[ii].packingPlan);
                         maxobj = newSolutions[ii].ob;
                     }
                 }
-                maxobj = 0;
+                maxobj = Double.NEGATIVE_INFINITY;
                 TTPSolution newSol = null;
+                int indice = 0;
                 for(int k = 0; k < lambda; k++) {
                     for(int ii = 0; ii < newPackingPlans[0].length; ii++) {
-                        if (Math.random() < 1/lambda) newPackingPlans[k][ii] = s2.packingPlan[ii];
+                        if (Math.random() < 1/lambda) newPackingPlans[k][ii] = packingPlans[0][ii];
                                 else newPackingPlans[k][ii] = optPackingPlan[ii];
                     }
                     newSol = new TTPSolution(tour, newPackingPlans[k]);
                     instance.evaluate(newSol);
                     if(newSol.ob > maxobj && newSol.wend >= 0) {
-                        optPackingPlan = newSol.packingPlan;
+                        optPackingPlan = (int[])DeepCopy.copy(newSol.packingPlan);
                         maxobj = newSol.ob;
+                        indice = k;
                     }
                 }
+                newSol = new TTPSolution(tour, newPackingPlans[indice]);
+                instance.evaluate(newSol);
                 if (newSol.ob > globalBestObjective) {
                     counter = 0;
                     s2 = newSol.clone();
+                    packingPlans[0] = newPackingPlans[indice];
                     globalBestObjective = newSol.ob;
                 }
             }
