@@ -64,10 +64,10 @@ public class Optimisation {
     
     public static TTPSolution hillClimber(TTPInstance instance, int[] tour,
             int mode, 
-            int durationWithoutImprovement, int maxRuntime, int mu, double lambda) {
+            int durationWithoutImprovement, int maxRuntime, int mu, double lambda, int preproc) {
         
         ttp.Utils.Utils.startTiming();
-        Optimisation.preProcess(instance,tour);
+        if(preproc == 1) Optimisation.preProcess(instance,tour);
 
         boolean debugPrint = !true;
 
