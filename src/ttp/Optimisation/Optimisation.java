@@ -28,7 +28,7 @@ public class Optimisation {
     public static void preProcess(TTPInstance instance, int[] tour) {
     TTPSolution empty_sol=new TTPSolution(tour, new int[0]);
     instance.evaluate(empty_sol);
-        for (int j = 0; j < instance.numberOfNodes; j++) {
+        for (int j = 0; j < instance.items.length; j++) {
             int i = 0;
             while (i < instance.items[j].length) {
                 int[] array = new int[1];
@@ -67,7 +67,7 @@ public class Optimisation {
             int durationWithoutImprovement, int maxRuntime, int mu, double lambda) {
         
         ttp.Utils.Utils.startTiming();
-        //Optimisation.preProcess(instance,tour);
+        Optimisation.preProcess(instance,tour);
 
         boolean debugPrint = !true;
 
