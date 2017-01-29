@@ -17,6 +17,12 @@ We also use an heuristic to identify useless object and delete them. You can fin
 
 We will discuss about the impact of the preprocessing, the optimal parameters $\lambda$ and $\mu$ for each algorithm and we will compare the differents heuristics over different kind of instances.
 
+TODO PRECISE CONFIG OF THE PC.
+
+\tableofcontents
+
+\newpage
+
 \section{Preprocessing}
 
 We begin with a comparison of the effectiveness of the \textit{RLS} with and without the preprocessing. This will give an insight of the utility of this method. We consider the dataset \textbf{fnl4461 n4460 bounded-strongly-corr 01}.
@@ -24,28 +30,31 @@ We begin with a comparison of the effectiveness of the \textit{RLS} with and wit
 \begin{figure}[!h]
 	\begin{center}
 		\begin{tikzpicture}[scale = 0.6]
-			\draw[step=1,gray,thin]  (0,0) grid (10,7);
-			\foreach \x in {6,7,8,9,10,11,12,13,14,15,16}
-		 \node[anchor=north] at (\x-6,0) {\x};
-			\foreach \y in {10,20,30,40,50,60}
-		 \node[anchor=east] at (0,\y/10) {\y};
-			\draw (5.5,-1.2) node{Text length};
-			\draw (-1.3,3.5) node[rotate=90]{Values};
+			\draw[step=1,gray,thin]  (0,0) grid (7,7);
+			\foreach \x in {.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0}
+		 \node[anchor=north] at (2*\x-1,0) {\x};
+			\foreach \y in {1,2,3,4,5,6}
+		 \node[anchor=east] at (0,\y) {\y};
+			\draw (3.4,-1.2) node{Duration time $1\cdot10^3$ ms};
+			\draw (-1.3,3.5) node[rotate=90]{Objective $3.33\cdot10^5$};
 			
-			\draw[thick] plot file {expe_res_m5_s2_black.txt};
-			\draw[thick, color=gray] plot file {expe_res_m5_s2_gray.txt};
-			\draw[thin, color=blue] plot[mark=*] file {expe_res_m5_s2_blue.txt};
-			\draw[thin, color=green] plot[mark=+] file {expe_res_m5_s2_green.txt};
-			\draw[thin, color=red] plot[mark=x] file {expe_res_m5_s2_red.txt};
+			\draw[thick] plot[mark=*]  file {with_preproc.txt};
+			\draw[thick, color=gray] plot[mark=+] file {no_preproc.txt};
 			
-			\draw(13,6)node[fill=blue!50] {Sum};
-			\draw(13,5)node[fill=green!50] {Distincts};
-			\draw(13,4)node[fill=red!50] {Changes};
+			\draw[white] (13,6)node[fill=black!80] {With preprocessing};
+			\draw(13,5)node[fill=gray!50] {No preprocessing};
 		\end{tikzpicture}
 	\end{center}
-	\caption{$S$, $D$ and $C$ function of $n$ for fixed $m=5$ and $\sigma=2$. The black function is $(\sigma-1)m(n-m)$ and the gray one is $m + (\sigma - 1)n$.}
-	\label{expe_res_m5_s2}
+	\caption{Effectiveness with and without preprocessing.}
+	\label{expe_preprocessing}
 \end{figure}
 
+This suggests the preprocessing is not so usefull. In the following tests we will assume the preprocessing is desactivated.
+
+\section{Finding optimal parameters}
+\subsection{Parameters for the ($\mu$+$\lambda$)EA}
+\subsection{Parameters for the ($\mu$,$\lambda$)EA}
+
+\section{Comparisons}
 
 \end{document}
