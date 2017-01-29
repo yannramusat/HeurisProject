@@ -35,14 +35,77 @@ public class Driver {
 //            args = new String[]{"instances", "a280_n1395_bounded-strongly-corr_10.ttp", // to do just this 1 instance
             args = new String[]{"instances", "fnl4461_n4460_bounded-strongly-corr_01.ttp", // to do just this 1 instance
 //            args = new String[]{"instances", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
-            "1", "10000", "3000", "1", "10", "1"};
+            "3", "1000000", "6000", "1", "1", "1"};
 //        ttp.Optimisation.Optimisation.doAllLinkernTours();
 //        runSomeTests();
+        //generate_datas_preprocessing();
         doBatch(args);
+    }
+
+    public static void generate_datas_preprocessing() {
+        System.out.println("Start generating datas for the preprocessing:");
+
+        double[][] results = new double[8][2];
+
+        for(int i = 1; i <= 8; i++) {
+            System.out.println("Computing for duration " + Integer.toString (500*i));
+
+            String[] args = new String[]{"instances", "fnl4461_n4460_bounded-strongly-corr_01.ttp", // to do just this 1 instance
+//            args = new String[]{"instances", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
+                    "1", "1000000", Integer.toString (500*i), "1", "1", "1"};
+
+            for(int j = 0; j < 5; j++ ) {
+                results[i-1][0] += doBatch(args);
+            }
+            results[i-1][0] /= 5;
+
+            System.out.println("With no preproc:");
+
+            args = new String[]{"instances", "fnl4461_n4460_bounded-strongly-corr_01.ttp", // to do just this 1 instance
+//            args = new String[]{"instances", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
+                    "1", "1000000", Integer.toString (500*i), "1", "1", "0"};
+
+            for(int j = 0; j < 5; j++ ) {
+                results[i-1][1] += doBatch(args);
+            }
+            results[i-1][1] /= 5;
+        }
+
+        /* prepare print */
+        String to_print = "";
+        for(int i = 0; i < 8; i++) {
+            to_print += i + " " + results[i][0] + "\n";
+        }
+
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter("with_preproc"+System.currentTimeMillis(), false));
+            writer.write(to_print);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+
+        to_print = "";
+        for(int i = 0; i < 8; i++) {
+            to_print += i + " " + results[i][1] + "\n";
+        }
+
+        try {
+            writer = new BufferedWriter(new FileWriter("no_preproc"+System.currentTimeMillis(), false));
+            writer.write(to_print);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
     }
     
     // note: doBatch can process several files sequentially
-    public static void doBatch(String[] args) {
+    public static double doBatch(String[] args) {
 //        String[] args = new String[]{"instances/","a2"};                      // first argument: folder with TTP and TSP files, second argument: partial filename of the instances to be solved   
 //        System.out.println("parameters: "+Arrays.toString(args));
         File[] files = ttp.Utils.Utils.getFileList(args);
@@ -88,9 +151,11 @@ public class Driver {
             // print to screen
             solution.println();
             
-            
+            return solution.getObjective();
 //            solution.printFull();
         }
+
+        return Double.MIN_VALUE;
     }
     
     

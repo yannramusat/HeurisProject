@@ -65,7 +65,7 @@ public class Optimisation {
     public static TTPSolution hillClimber(TTPInstance instance, int[] tour,
             int mode, 
             int durationWithoutImprovement, int maxRuntime, int mu, double lambda, int preproc) {
-        
+
         ttp.Utils.Utils.startTiming();
         if(preproc == 1) Optimisation.preProcess(instance,tour);
 
