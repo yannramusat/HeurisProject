@@ -3,6 +3,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{url}
 \usepackage{tikz}
+\usepackage{csvsimple}
 
 \title{2-24-1 Optimization and search heuristics}
 \author{Baptiste Louf, Yann Ramusat}
@@ -52,7 +53,22 @@ We begin with a comparison of the effectiveness of the \textit{RLS} with and wit
 This suggests the preprocessing is not so usefull. In the following tests we will assume the preprocessing is desactivated.
 
 \section{Finding optimal parameters}
+
+We now search for optimal values for the parameters given to the \textit{Evolutionary Algorithms}.
+
 \subsection{Parameters for the ($\mu$+$\lambda$)EA}
+
+We have computed results over the same dataset as before but with a time limit fixed to $2$ seconds.
+
+In the following table we give the objective value ($\cdot 10^3$) depending on $\lambda$ (columns) and $\mu$ (rows). 
+
+\csvautotabular{mu+lambda.csv}
+
+We do not represent greater values of $\mu$ because they are worth.
+
+We observe that definitively, the best value for $\mu$ is $1$ and that $\lambda$ can be taken around $5$ or $6$.
+
+
 \subsection{Parameters for the ($\mu$,$\lambda$)EA}
 
 \section{Comparisons}
