@@ -53,7 +53,7 @@ public class Driver {
             for(int lambda = 1; lambda <= 15; lambda++) {
                 String[] args = new String[]{"instances", "fnl4461_n4460_bounded-strongly-corr_01.ttp", // to do just this 1 instance
 //            args = new String[]{"instances", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
-                        "2", "1000000", "2000", Integer.toString(mu), Integer.toString(lambda), "0"};
+                        "4", "1000000", "2000", Integer.toString(mu), Integer.toString(lambda), "0"};
                 System.out.println("Processing with mu="+mu+" lambda="+lambda);
                 for(int j = 0; j < 10; j++ ) {
                     results[mu-1][lambda-1] += doBatch(args);
@@ -68,7 +68,7 @@ public class Driver {
 
         BufferedWriter writer;
         try {
-            writer = new BufferedWriter(new FileWriter("mu+lambda_"+System.currentTimeMillis(), false));
+            writer = new BufferedWriter(new FileWriter("mu,lambda_"+System.currentTimeMillis(), false));
             writer.write(to_print);
             writer.flush();
             writer.close();

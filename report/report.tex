@@ -62,7 +62,10 @@ We have computed results over the same dataset as before but with a time limit f
 
 In the following table we give the objective value ($\cdot 10^3$) depending on $\lambda$ (columns) and $\mu$ (rows). 
 
+\begin{center}
 \csvautotabular{mu+lambda.csv}
+\end{center}
+
 
 We do not represent greater values of $\mu$ because they are worth.
 
@@ -71,6 +74,16 @@ We observe that definitively, the best value for $\mu$ is $1$ and that $\lambda$
 
 \subsection{Parameters for the ($\mu$,$\lambda$)EA}
 
-\section{Comparisons}
+We still use the same dataset and the same time limit.
+
+\begin{center}
+\csvautotabular{mu-lambda.csv}
+\end{center}
+
+For the two algorithm the impact of the values are similar (except when $\mu$ and $\lambda$ are equals to 1).
+
+We conclude optimal parameters are $1$ for $\mu$ and around $10$ for $\lambda$.
+
+\section{Comparisons between algorithms over different datasets}
 
 \end{document}
