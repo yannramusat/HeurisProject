@@ -7,3 +7,4 @@ Type of *algorithm*:
 3. Simulated annealing
 4. (\mu,\lambda) EA
 5. 1+(\lambda,\lambda) GA
+6. Aléatoire

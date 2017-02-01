@@ -35,12 +35,12 @@ public class Driver {
 //            args = new String[]{"instances", "a280_n1395_bounded-strongly-corr_10.ttp", // to do just this 1 instance
             args = new String[]{"instances", "fnl4461_n4460_bounded-strongly-corr_01.ttp", // to do just this 1 instance
 //            args = new String[]{"instances", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
-            "3", "1000000", "6000", "1", "1", "1"};
+            "6", "1000000", "6000", "1", "7", "0"};
 //        ttp.Optimisation.Optimisation.doAllLinkernTours();
 //        runSomeTests();
         //generate_datas_preprocessing();
-        generate_datas_mulambda();
-        //doBatch(args);
+        //generate_datas_mulambda();
+        doBatch(args);
     }
 
     public static void generate_datas_mulambda() {

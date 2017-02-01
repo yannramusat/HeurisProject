@@ -87,6 +87,8 @@ public class Optimisation {
         TTPSolution s2 = null;
         
         long startingTimeForRuntimeLimit = System.currentTimeMillis()-200;
+
+        if(mode == 5) lambda = (int)Math.sqrt(Math.log(packingPlans[0].length));
         
         int i = 0;
         int counter = 0;
@@ -101,8 +103,6 @@ public class Optimisation {
                 System.out.println(" i="+i+"("+counter+") bestObjective="+bestObjective); 
             }
 
-            if(mode == 5) lambda = (int)Math.sqrt(Math.log(packingPlans[0].length));
-
             //int[] newPackingPlan = (int[])DeepCopy.copy(packingPlan);
             int[][] newPackingPlans = new int[(int)lambda][instance.numberOfItems];
             for(int k = 0; k < lambda; k++) {
@@ -111,8 +111,16 @@ public class Optimisation {
             }
             
             boolean flippedToZero = false;
+
+
+            if(mode >= 6) {
+                mode += (int)(Math.random()*6);
+                while(mode%6 == 0) mode += (int)(Math.random()*5);
+                if(mode > 10000) mode -= 6000;
+                //System.out.println(mode%6);
+            }
             
-            switch (mode) {
+            switch (mode%6) {
                 case 1:
                 case 3: // simulated annealing
                     // flip one bit
@@ -169,7 +177,7 @@ public class Optimisation {
             }
 //            System.out.println(ttp.Utils.Utils.stopTiming());
 
-            if(mode == 2 || mode == 4) {
+            if(mode%6 == 2 || mode%6 == 4) {
                 //System.out.println();
                 // test whether we have new optimum
                 improvement = false;
@@ -189,7 +197,7 @@ public class Optimisation {
                 for(int k = 0; k < mu; k++) {
                     int indice = 0;
                     double new_max = Double.NEGATIVE_INFINITY;
-                    if(mode == 2) {
+                    if(mode%6 == 2) {
                         boolean lam = false;
                         for(int l = 0; l < lambda + mu; l++) {
                             if(l<mu) {
@@ -215,7 +223,7 @@ public class Optimisation {
                         } else {
                             packingPlans[k] = (int[])DeepCopy.copy(packingPlans[indice]);
                         }
-                    } else if (mode == 4) {
+                    } else if (mode%6 == 4) {
                         for(int l = 0; l < lambda; l++) {
                             if(newSolutions[l].ob > new_max && newSolutions[l].wend >= 0) {
                                 new_max = newSolutions[l].ob;
@@ -230,7 +238,7 @@ public class Optimisation {
                     }
                 }
 
-            } else if(mode == 1 || mode == 3) {
+            } else if(mode%6 == 1 || mode%6 == 3) {
                 /* replacement condition:
                  *   objective value has to be at least as good AND
                  *   the knapsack cannot be overloaded
@@ -254,7 +262,7 @@ public class Optimisation {
                     }
                     //System.out.println("New seen: "+newSolutions[0].ob);
 
-                } else if (mode == 3 && newSolutions[0].wend >= 0) { // simulated annealing
+                } else if (mode%6 == 3 && newSolutions[0].wend >= 0) { // simulated annealing
                     /* proba */
                     double arg = (newSolutions[0].ob - bestObjective) * ttp.Utils.Utils.stopTiming();
                     if (Math.random() < Math.exp(arg)) {
@@ -268,7 +276,7 @@ public class Optimisation {
                     improvement = false;
                     counter++;
                 }
-            } else if (mode == 5) {
+            } else if (mode%6 == 5) {
                 int[] optPackingPlan = new int[newPackingPlans[0].length];
                 double maxobj = Double.NEGATIVE_INFINITY;;
                 for(int ii = 0; ii < lambda; ii++) {
