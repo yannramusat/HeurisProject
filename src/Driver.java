@@ -40,7 +40,72 @@ public class Driver {
 //        runSomeTests();
         //generate_datas_preprocessing();
         //generate_datas_mulambda();
-        doBatch(args);
+        generate_results();
+        //doBatch(args);
+    }
+
+    public static void generate_results() {
+        String[] args = null;
+        String to_print = "";
+        double result = 0;
+        for(int i = 1; i <= 6; i++) {
+            System.out.println("Algo: "+i);
+
+            args = new String[]{"instances", "a280_n279_bounded-strongly-corr_01", // to do just this 1 instance
+//            args = new String[]{"instances", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
+                    Integer.toString(i), "1000000", "5000", "1", "7", "0"};
+
+            result = 0;
+            for(int j = 0; j < 10; j++ ) {
+                result += doBatch(args);
+            }
+            result /= 10;
+
+            to_print += Double.toString(result);
+            if(i != 6) to_print += ", ";
+            System.out.println(result);
+
+
+            args = new String[]{"instances", "a280_n1395_uncorr-similar-weights_05.ttp", // to do just this 1 instance
+//            args = new String[]{"instances", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
+                    Integer.toString(i), "1000000", "5000", "1", "7", "0"};
+
+            result = 0;
+            for(int j = 0; j < 10; j++ ) {
+                result += doBatch(args);
+            }
+            result /= 10;
+
+            to_print += Double.toString(result);
+            if(i != 6) to_print += ", ";
+            System.out.println(result);
+
+            args = new String[]{"instances", "a280_n2790_uncorr_10.ttp", // to do just this 1 instance
+//            args = new String[]{"instances", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
+                    Integer.toString(i), "1000000", "5000", "1", "7", "0"};
+
+            result = 0;
+            for(int j = 0; j < 10; j++ ) {
+                result += doBatch(args);
+            }
+            result /= 10;
+
+            to_print += Double.toString(result);
+            if(i != 6) to_print += ", ";
+            System.out.println(result);
+
+            to_print += "\n";
+        }
+
+        BufferedWriter writer;
+        try {
+            writer = new BufferedWriter(new FileWriter("a280_"+System.currentTimeMillis(), false));
+            writer.write(to_print);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void generate_datas_mulambda() {
