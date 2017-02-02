@@ -40,8 +40,46 @@ public class Driver {
 //        runSomeTests();
         //generate_datas_preprocessing();
         //generate_datas_mulambda();
-        generate_results();
+        //generate_results();
+        generate_convergence();
         //doBatch(args);
+    }
+
+    public static void generate_convergence() {
+        String[] args = null;
+        double result = 0;
+        for(int i = 1; i <= 6; i++) {
+            System.out.println("Algo: " + i);
+
+            String to_print = "";
+
+            for(int j = 1; j <= 10; j++) {
+                System.out.println("    During: " + j*500);
+                args = new String[]{"instances", "fnl4461_n4460_bounded-strongly-corr_01.ttp", // to do just this 1 instance
+//            args = new String[]{"instances", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
+                        Integer.toString(i), "1000000", Integer.toString(j*500), "1", "7", "0"};
+
+                result = 0;
+                for(int k = 0; k < 10; k++ ) {
+                    result += doBatch(args);
+                }
+                result /= 10;
+
+                to_print += Integer.toString(j) + " " + Double.toString(result);
+                to_print += "\n";
+                System.out.println(result);
+            }
+
+            BufferedWriter writer;
+            try {
+                writer = new BufferedWriter(new FileWriter("algo"+i+"_"+System.currentTimeMillis(), false));
+                writer.write(to_print);
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void generate_results() {
@@ -62,7 +100,7 @@ public class Driver {
             result /= 10;
 
             to_print += Double.toString(result);
-            if(i != 6) to_print += ", ";
+            to_print += ", ";
             System.out.println(result);
 
 
@@ -77,7 +115,7 @@ public class Driver {
             result /= 10;
 
             to_print += Double.toString(result);
-            if(i != 6) to_print += ", ";
+            to_print += ", ";
             System.out.println(result);
 
             args = new String[]{"instances", "a280_n2790_uncorr_10.ttp", // to do just this 1 instance
@@ -91,7 +129,6 @@ public class Driver {
             result /= 10;
 
             to_print += Double.toString(result);
-            if(i != 6) to_print += ", ";
             System.out.println(result);
 
             to_print += "\n";
