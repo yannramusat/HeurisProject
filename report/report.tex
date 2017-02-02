@@ -98,6 +98,35 @@ We conclude optimal parameters are $1$ for $\mu$ and around $10$ for $\lambda$.
 
 \subsection{Convergence}
 
+\begin{figure}[!h]
+	\begin{center}
+		\begin{tikzpicture}[scale = 0.6]
+			\draw[step=1,gray,thin]  (0,0) grid (9,7);
+			\foreach \x in {.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0}
+		 \node[anchor=north] at (2*\x-1,0) {\x};
+			\foreach \y in {1,2,3,4,5,6}
+		 \node[anchor=east] at (0,\y) {\y};
+			\draw (3.4,-1.2) node{Duration time $1\cdot10^3$ ms};
+			\draw (-1.3,3.5) node[rotate=90]{Objective $3.33\cdot10^5$};
+			
+			\draw[thick] plot[mark=*]  file {algo1.txt};
+			\draw[thick, color=gray] plot[mark=+] file {algo2.txt};
+			\draw[thick, color=blue] plot[mark=x] file {algo3.txt};
+			\draw[thick, color=red] plot[mark=*] file {algo4.txt};
+			\draw[thick, color=green] plot[mark=+] file {algo5.txt};
+			\draw[thick, color=yellow] plot[mark=x] file {algo6.txt};
+			
+			\draw[white] (13,6)node[fill=black!80] {RLS};
+			\draw(13,5)node[fill=gray!50] {($\mu+\lambda$)EA};
+			\draw(13,4)node[fill=blue!50] {Simulated annealing};
+			\draw(13,3)node[fill=red!50] {($\mu,\lambda$)EA};
+			\draw(13,2)node[fill=green!50] {1+($\lambda,\lambda$)GA};
+			\draw(13,1)node[fill=yellow!50] {Aléatoire};
+		\end{tikzpicture}
+	\end{center}
+	\caption{Convergences of different algorithms (basic dataset).}
+	\label{expe_convergence}
+\end{figure}
 
 \section{Outline of the algorithm(s) and choices made}
 insert big outline
