@@ -135,14 +135,18 @@ We conclude optimal parameters are $1$ for $\mu$ and around $10$ for $\lambda$.
 \section{Outline of the algorithm(s) and choices made}
 insert big outline
 \subsection{Finding the tour}
-- not recomputed
-- no mutation of the tour + explanation
+A critical issue in the TTP problem is finding a nice tour. Indeed, according to the packing plan one chooses, the optimal tour may vary, and conversely. In the original paper, the choice is made to compute a good solution for TSP, and then fix the tour forever and focus on the packing plan. We made the same choice.\\
+We could have computed a "good tour" ourselves, considering that taking a TSP solution does not take into account the fact that the bag gets heavier over time, and thus smaller distances should be traveled at the end of the journey. However, efficient algorithms for TSP are already quite complicated, so we had no chance to find a good algorithm for that sloghtly different problem, and it seems beyond the point of a search heuristics project. Nonetheless, this raises a nice research question that we leave open.\\
+Another possibility was to use the precomputed tour as a starting point, and then do some local mutations (for instance : choose two consecutive cities in the tour and swap them). There were two options :\\
+- take a tour, optimize the packing plan for that tour, mutate the tour, optimize the packing plan for the mutated tour, compare, and start again … This would mean one optimization problem inside another, and would be time consuming
+- mutate the tour and the packing plan at the same time. This would result in a huge search space, we decided not to try.
 \subsection{Preprocessing the instance}
-- explanation
-- why we dropped it : not so efficient + overfitting
+In the original paper, there is an algorithm called Simple Heuristic, that takes into account the particularities of the problem. The results show that it is very inefficient compared to search algorithms, but there is a smart step in that simple heuristic where they discard \textit{disadvantageous} items : a simple condition tells if in any situation, the packing plan with that object is worse than the packing plan without that object. In that situtation we could preprocess the instance by removing all \textit{disadvantageous} items.\\
+However, the improvement was not substantial, and vanishes asymptotically, so we dropped that idea, especially since we want to avoid overfitting.
+
 \subsection{Search Heuristics}
-\subsubsection{Random Local Search}
-\subsubsection{(1+1) EA}
+We considered 6 different kinds of heuristics : random local search, simulated annealing, the ($\mu$+$\lambda$) EA, the ($\mu$,$\lambda$) EA, the 1+($\lambda$,$\lambda$) GA and a search heuristics that randomly chooses mutations at each step.
+\subsubsection{Simulated annealing}
 \subsubsection{($\mu$+$\lambda$) EA}
 -fixing parameters (for each instance ?)
 \subsubsection{($\mu$,$\lambda$) EA}
