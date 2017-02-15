@@ -40,15 +40,15 @@ public class Driver {
 //        runSomeTests();
         //generate_datas_preprocessing();
         //generate_datas_mulambda();
-        generate_results();
-        //generate_convergence();
+        //generate_results();
+        generate_convergence();
         //doBatch(args);
     }
 
     public static void generate_convergence() {
         String[] args = null;
         double result = 0;
-        for(int i = 1; i <= 6; i++) {
+        for(int i = 3; i <= 3; i++) {
             System.out.println("Algo: " + i);
 
             String to_print = "";
@@ -87,12 +87,13 @@ public class Driver {
         String to_print = "";
         int rep = 3;
         double result = 0;
-        for(int i = 1; i <= 6; i++) {
+        for(int k = 1; k <= 1; k++) {
+            int i = 3;
             System.out.println("Algo: "+i);
 
             args = new String[]{"instances", "pla33810_n33809_bounded-strongly-corr_01.ttp", // to do just this 1 instance
 //            args = new String[]{"instances", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
-                    Integer.toString(i), "1000000", "600000", "1", "7", "0"};
+                    Integer.toString(i), "1000000", "600", "1", "7", "0"};
 
             result = 0;
             for(int j = 0; j < rep; j++ ) {
@@ -107,7 +108,7 @@ public class Driver {
 
             args = new String[]{"instances", "pla33810_n169045_uncorr-similar-weights_05.ttp", // to do just this 1 instance
 //            args = new String[]{"instances", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
-                    Integer.toString(i), "1000000", "600000", "1", "7", "0"};
+                    Integer.toString(i), "1000000", "600", "1", "7", "0"};
 
             result = 0;
             for(int j = 0; j < rep; j++ ) {
@@ -137,7 +138,7 @@ public class Driver {
 
         BufferedWriter writer;
         try {
-            writer = new BufferedWriter(new FileWriter("pla33810_"+System.currentTimeMillis(), false));
+            writer = new BufferedWriter(new FileWriter("fnl4461_"+System.currentTimeMillis(), false));
             writer.write(to_print);
             writer.flush();
             writer.close();

@@ -63,7 +63,7 @@ public class Optimisation {
     
     
     public static TTPSolution hillClimber(TTPInstance instance, int[] tour,
-            int mode, 
+            int mode2,
             int durationWithoutImprovement, int maxRuntime, int mu, double lambda, int preproc) {
 
         ttp.Utils.Utils.startTiming();
@@ -71,7 +71,7 @@ public class Optimisation {
 
         boolean debugPrint = !true;
 
-        if(mode == 1 || mode == 3) {
+        if(mode2 == 1 || mode2 == 3) {
             mu = 1;
             lambda = 1;
         }
@@ -79,7 +79,7 @@ public class Optimisation {
         int[][] packingPlans = new int[mu][instance.numberOfItems];
         //int[] packingPlan = new int[instance.numberOfItems];
         
-                
+        double proba = 0.5;
         boolean improvement = true;
         double bestObjective = Double.NEGATIVE_INFINITY;
 
@@ -88,12 +88,13 @@ public class Optimisation {
         
         long startingTimeForRuntimeLimit = System.currentTimeMillis()-200;
 
-        if(mode == 5) lambda = (int)Math.sqrt(Math.log(packingPlans[0].length));
+        if(mode2 == 5) lambda = (int)Math.sqrt(Math.log(packingPlans[0].length));
         
         int i = 0;
         int counter = 0;
         while(counter<durationWithoutImprovement) {
-            
+            int mode=mode2;
+
             if (i%10==0 /*do the time check just every 10 iterations, as it is time consuming*/
                     && (System.currentTimeMillis()-startingTimeForRuntimeLimit)>=maxRuntime)
                 break;
@@ -114,9 +115,12 @@ public class Optimisation {
 
 
             if(mode >= 6) {
-                mode += (int)(Math.random()*6);
-                while(mode%6 == 0) mode += (int)(Math.random()*5);
-                if(mode > 10000) mode -= 6000;
+                if (Math.random()<proba){
+                    mode=1;
+                }
+                else{
+                    mode=2;
+                }
                 //System.out.println(mode%6);
             }
             
@@ -264,7 +268,9 @@ public class Optimisation {
 
                 } else if (mode%6 == 3 && newSolutions[0].wend >= 0) { // simulated annealing
                     /* proba */
-                    double arg = (newSolutions[0].ob - bestObjective) * ttp.Utils.Utils.stopTiming();
+                    //double arg = (newSolutions[0].ob - bestObjective) * ttp.Utils.Utils.stopTiming();
+                    //double arg = (newSolutions[0].ob - bestObjective)/(1000*Math.pow(0.99,(double)(i)));
+                    double arg = (newSolutions[0].ob - bestObjective)*Math.log(i)/(100);
                     if (Math.random() < Math.exp(arg)) {
                         /* update */
                         packingPlans[0] = newPackingPlans[0];
