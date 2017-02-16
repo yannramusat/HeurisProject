@@ -120,7 +120,7 @@
 \end{algorithm}
 \subsection{Finding the tour}
 A critical issue in the TTP problem is finding a nice tour. Indeed, according to the packing plan one chooses, the optimal tour may vary, and conversely. In the original paper, the choice is made to compute a good solution for TSP, and then fix the tour forever and focus on the packing plan. We made the same choice.\\
-We could have computed a "good tour" ourselves, considering that taking a TSP solution does not take into account the fact that the bag gets heavier over time, and thus smaller distances should be traveled at the end of the journey. However, efficient algorithms for TSP are already quite complicated, so we had no chance to find a good algorithm for that sloghtly different problem, and it seems beyond the point of a search heuristics project. Nonetheless, this raises a nice research question that we leave open.\\
+We could have computed a "good tour" ourselves, considering that taking a TSP solution does not take into account the fact that the bag gets heavier over time, and thus smaller distances should be traveled at the end of the journey. However, efficient algorithms for TSP are already quite complicated, so we had no chance to find a good algorithm for that slightly different problem, and it seems beyond the point of a search heuristics project. Nonetheless, this raises a nice research question that we leave open.\\
 Another possibility was to use the precomputed tour as a starting point, and then do some local mutations (for instance : choose two consecutive cities in the tour and swap them). There were two options :\\
 - take a tour, optimize the packing plan for that tour, mutate the tour, optimize the packing plan for the mutated tour, compare, and start again … This would mean one optimization problem inside another, and would be time consuming\\
 - mutate the tour and the packing plan at the same time. This would result in a huge search space, we decided not to try.
@@ -152,10 +152,10 @@ We did exactly the same for the ($\mu$,$\lambda$) EA :
 Hence, for simplicity, we fixed $\mu=1$ and $\lambda=7$ for both algorithms.
 
 \subsubsection{Considering several mutations}
-The idea here is to, at each step, randomly choose one mutation and apply it to the current solution, then replace the current solution \textbf{if it is improved}. After some preliminary tests, we chose to …
+The idea here is to, at each step, randomly choose one mutation and apply it to the current solution, then replace the current solution if it is improved. After some preliminary tests, we chose to mutate as RLS with probability $1/2$ and as ($\mu + \lambda$) w.p. $1/2$.
 \section{Experimental results}
 \subsection{Methodology}
-We chose to test our heuristics on the 9 datasets of the CEC competition, as it would take too long to test on all the datasets we were provided with. It still covers the main differences in parameters (size, number of items, correlations, etc.), and we are given benchmark objectives. \\
+We chose to test our heuristics on the 9 datasets of the CEC competition, as it would take too long to test on all the datasets we were provided with. It still covers the main differences in parameters (size, number of items, correlations, ettc.), and we are given benchmark objectives. \\
 On every dataset, we ran each algorithm with a time limit of 10 minutes (as in the CEC competition), and the algorithm stops if 1000000 steps without improvement  were observed. The result is averaged over 3 runs of the algorithm.
 \subsection{Results}
 We obtain satisfying results : except for the hardest instance, our results are always slightly better than the objectives of the CEC competition, and we even have a much better result on the penultimate instance. The random mutation is the best on small and medium instances (it probably finds the global optimum on the small instances since it always returns the same value), but it is really slow to converge. The simulated annealing is by far the best on big instances. The RLS performs well on every instance, especially on big ones. The ($\mu + \lambda$) EA gives good results for small and medium instances. The 1+($\lambda$,$\lambda$) GA is also quite good on small and medium instances, and the worst algorithm here is the ($\mu$,$\lambda$) EA.
@@ -195,7 +195,7 @@ We obtain satisfying results : except for the hardest instance, our results are 
 			\draw(13,4)node[fill=blue!50] {Simulated annealing};
 			\draw(13,3)node[fill=red!50] {($\mu,\lambda$)EA};
 			\draw(13,2)node[fill=green!50] {1+($\lambda,\lambda$)GA};
-			\draw(13,1)node[fill=yellow!50] {Aléatoire};
+			\draw(13,1)node[fill=yellow!50] {Random};
 		\end{tikzpicture}
 	\end{center}
 	\caption{Convergences of different algorithms (basic dataset).}
